@@ -24,7 +24,7 @@ pipeline {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', '15baf096-1836-4b26-bb5d-6873f49370f5') {
                             myapp.push("latest")
-                            myapp.push("${env.BUILD_ID}")
+                            //myapp.push("${env.BUILD_ID}")
                     }
                 }
             }
