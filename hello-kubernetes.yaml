@@ -5,8 +5,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
-    targetPort: 8080
+  - port: 11130
+    targetPort: 11130
   selector:
     app: hello-kubernetes
 ---
@@ -28,4 +28,4 @@ spec:
       - name: hello-kubernetes
         image: musapple/hellohp:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 11130
