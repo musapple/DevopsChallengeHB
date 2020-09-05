@@ -1,32 +1,21 @@
-FROM node:13.6.0-alpine
+FROM bitnami/node:9 as builder
+ENV NODE_ENV="production"
 
-ARG IMAGE_CREATE_DATE
-ARG IMAGE_VERSION
-ARG IMAGE_SOURCE_REVISION
+# Copy app's source code to the /app directory
+COPY . /app
 
-# Metadata as defined in OCI image spec annotations - https://github.com/opencontainers/image-spec/blob/master/annotations.md
-LABEL org.opencontainers.image.title="Hello Kubernetes!" \
-      org.opencontainers.image.description="Provides a demo image to deploy to a Kubernetes cluster. It displays a message, the name of the pod and details of the node it is deployed to." \
-      org.opencontainers.image.created=$IMAGE_CREATE_DATE \
-      org.opencontainers.image.version=$IMAGE_VERSION \
-      org.opencontainers.image.authors="Paul Bouwer" \
-      org.opencontainers.image.url="https://hub.docker.com/r/paulbouwer/hello-kubernetes/" \
-      org.opencontainers.image.documentation="https://github.com/paulbouwer/hello-kubernetes/README.md" \
-      org.opencontainers.image.vendor="Paul Bouwer" \
-      org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.source="https://github.com/paulbouwer/hello-kubernetes.git" \
-      org.opencontainers.image.revision=$IMAGE_SOURCE_REVISION 
+# The application's directory will be the working directory
+WORKDIR /app
 
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-
-# Install app dependencies
-COPY package.json /usr/src/app/
+# Install Node.js dependencies defined in '/app/packages.json'
 RUN npm install
 
-# Bundle app source
-COPY . /usr/src/app
+FROM bitnami/node:9-prod
+ENV NODE_ENV="production"
+COPY --from=builder /app /app
+WORKDIR /app
+ENV PORT 5000
+EXPOSE 5000
 
-USER node
-CMD [ "npm", "start" ]
+# Start the application
+CMD ["npm", "start"]
