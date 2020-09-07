@@ -31,7 +31,7 @@ pipeline {
         }        
         stage('Deploy to GKE') {
             steps{
-                //sh "sed -i 's/hellohp:latest/hellohp:${env.BUILD_ID}/g' hello-kubernetes.yaml"
+                
                 step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'hello-kubernetes.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
             }
         }
